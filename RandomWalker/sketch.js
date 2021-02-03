@@ -1,82 +1,92 @@
- let walker;
+let walker;
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
-  walker = new Walker(random(0,width),random(0,height),1);
+  walker = new Walker(floor(random(0, width)), floor(random(0, height)), 1);
+  background(0);
 }
 
 function draw() {
-  background(0);
   walker.move();
   walker._DOF();
   walker.edgeDetect();
+  walker.display();
 }
 
-class Walker{
+class Walker {
   constructor(initx, inity, latticel) {
     this.x = initx;
     this.y = inity;
     this.latticel = latticel; //each step is 1 lattice unit, so defining lattice length here also defines the number of the lattice
-    this.speed = 1;
-    this.DOF = 0;
-    this.arr = [[], []];
-    this.ix = floor(windowWidth / this.x) + 1;
-    this.iy = floor(windowHeight / this.y) + 1;
-    this.selector = 0; 
+    this.speed = latticel;
+    this.DOF = 4;
+    this.arrx = [];
+    this.arry = [];
+    this.selector = 0;
   }
   _DOF() {
     this.DOF = 0;
     //initialize and store the first step
-    this.arr[[this.ix], [this.iy]] = true;
+    this.arrx[this.x - 1] = true;
+    this.arry[this.y - 1] = true;
     //calculate DOF
-    switch (this.arr[[this.ix + this.speed], [this.iy + this.speed]] == true) {
-      case true:
-        break;
-      case false:
-        this.DOF++;
-        break;
+    if (
+      this.arrx[this.x + this.speed - 1] == true &&
+      this.arry[this.y + this.speed - 1] == true
+    ) {
+    } else {
+      this.DOF++;
     }
-    switch (this.arr[[this.ix + this.speed], [this.iy - this.speed]] == true) {
-      case true:
-        break;
-      case false:
-        this.DOF++;
-        break;
+
+    if (
+      this.arrx[this.x + this.speed - 1] == true &&
+      this.arry[this.y - this.speed - 1] == true
+    ) {
+    } else {
+      this.DOF++;
     }
-    switch (this.arr[[this.ix - this.speed], [this.iy - this.speed]] == true) {
-      case true:
-        break;
-      case false:
-        this.DOF++;
-        break;
+
+    if (
+      this.arrx[this.x - this.speed - 1] == true &&
+      this.arry[this.y - this.speed - 1] == true
+    ) {
+    } else {
+      this.DOF++;
     }
-    switch (this.arr[[this.ix - this.speed], [this.iy - this.speed]] == true) {
-      case true:
-        break;
-      case false:
-        this.DOF++;
-        break;
+
+    if (
+      this.arrx[this.x - this.speed - 1] == true &&
+      this.arry[this.y + this.speed - 1] == true
+    ) {
+    } else {
+      this.DOF++;
     }
     console.log(this.DOF);
   }
   move() {
-    this.selector = random(this.DOF);
+    this.selector = random(1, this.DOF);
     if (this.selector == 0) {
-      this.y--;
-      this.arr[[this.ix], [this.iy - this.speed]] = true;
+      this.y = this.y - 1;
+      this.arrx.splice(this.x - 1, 0, true);
+      this.arry.splice(this.y - this.speed - 1, 0, true);
     } else if (this.selector == 1) {
-      this.x++;
-      this.arr[[this.ix + this.speed], [this.iy]] = true;
+      this.x = this.x + 1;
+      this.arrx.splice(this.x + this.speed - 1, 0, true);
+      this.arry.splice(this.y - 1, 0, true);
     } else if (this.selector == 2) {
-      this.y++;
-      this.arr[[this.ix], [this.iy+this.speed]] = true;
-    } else if (this.selector = 3) {
-      this.x--;
-      this.arr[[this.ix-this.speed], [this.iy]] = true;
+      this.y = this.y + 1;
+      this.arrx.splice(this.x - 1, 0, true);
+      this.arry.splice(this.y + this.speed - 1, 0, true);
+    } else if ((this.selector = 3)) {
+      this.x = this.x - 1;
+      this.arrx.splice(this.x - this.speed - 1, 0, true);
+      this.arry.splice(this.y - 1, 0, true);
     } else {
       alert("unexpected circumstance");
     }
-    console.log("this x loc is " + this.x +"\t" + "this y loc is" + this.y);
+    // console.log(this.arrx);
+    console.log("this x loc is " + this.x + "\t" + "this y loc is" + this.y);
+    // console.log(this.selector);
   }
   edgeDetect() {
     if (
@@ -88,5 +98,11 @@ class Walker{
       this.x = 0;
       this.y = 0;
     }
+  }
+  display() {
+    
+    stroke(255);
+    strokeWeight(2);
+    point(this.x, this.y);
   }
 }
