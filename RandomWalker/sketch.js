@@ -5,7 +5,7 @@ function setup() {
   walker = new Walker(
     floor(random(0, width) + 1),
     floor(random(0, height) + 1),
-    1
+    10
   );
   background(0);
 }
@@ -29,69 +29,70 @@ class Walker {
     this.selector = 0;
   }
   _DOF() {
-    this.DOF = 0;
+    
     //initialize and store the first step
-    this.arrx[this.x - 1] = 1;
-    this.arry[this.y - 1] = 1;
-    //calculate DOF
+    this.arrx[this.x - 1] = true;
+    this.arry[this.y - 1] = true;
+    //check surrounding, calculate DOF
     if (
-      this.arrx[this.x + this.speed - 1] == 1 &&
-      this.arry[this.y + this.speed - 1] == 1
+      this.arrx[this.x - 1 + this.speed] == undefined
     ) {
-    } else {
       this.DOF++;
-    }
+    } 
 
     if (
-      this.arrx[this.x + this.speed - 1] == 1 &&
-      this.arry[this.y - this.speed - 1] == 1
+      this.arrx[this.x - 1 - this.speed] == undefined
     ) {
-    } else {
       this.DOF++;
-    }
+    } 
 
     if (
-      this.arrx[this.x - this.speed - 1] == 1 &&
-      this.arry[this.y - this.speed - 1] == 1
+      this.arry[this.y - 1 - this.speed] == undefined
     ) {
-    } else {
       this.DOF++;
-    }
+    } 
 
     if (
-      this.arrx[this.x - this.speed - 1] == 1 &&
-      this.arry[this.y + this.speed - 1] == 1
+      this.arry[this.y - 1 + this.speed] == undefined
     ) {
-    } else {
       this.DOF++;
-    }
-    // console.log(this.DOF);
+    } 
+    
+    console.log("DOF = " + this.DOF);
   }
   move() {
-    this.selector = random(1, this.DOF);
+    this.selector = 0;
+    this.selector = floor(random(0, this.DOF+1));
     switch (this.selector) {
       case 0:
-        this.y = this.y - 1;
-        this.arrx.splice(this.x - 1, 1, 1);
-        this.arry.splice(this.y - this.speed - 1, 1, 1);
+        this.y = this.y - this.speed;
+        this.arrx.splice(this.x - 1, 1, true);
+        this.arry.splice(this.y - 1, 1, true);
+        break;
       case 1:
-        this.x = this.x + 1;
-        this.arrx.splice(this.x + this.speed - 1, 1, 1);
-        this.arry.splice(this.y - 1, 1, 1);
+        this.x = this.x + this.speed;
+        this.arrx.splice(this.x - 1, 1, true);
+        this.arry.splice(this.y - 1, 1, true);
+        break;
       case 2:
-        this.y = this.y + 1;
-        this.arrx.splice(this.x - 1, 1, 1);
-        this.arry.splice(this.y + this.speed - 1, 1, 1);
+        this.y = this.y + this.speed;
+        this.arrx.splice(this.x - 1, 1, true);
+        this.arry.splice(this.y - 1, 1, true);
+        break;
       case 3:
-        this.x = this.x - 1;
-        this.arrx.splice(this.x - this.speed - 1, 1, 1);
-        this.arry.splice(this.y - 1, 1, 1);
-      case 5:
-        alert("unexpected circumstance");
+        this.x = this.x - this.speed;
+        this.arrx.splice(this.x - 1, 1, true);
+        this.arry.splice(this.y - 1, 1, true);
+        break;
+      default:
+        alert("expecting DOF from 1 - 4");
+        break;
     }
-    console.log(this.arrx);
-    // console.log("this x loc is " + this.x + "\t" + "this y loc is" + this.y);
-    // console.log(this.selector);
+    this.DOF = 0;
+    console.log("arrx = " + this.arrx);
+    console.log("arry = " + this.arry);
+    console.log("this x loc is " + this.x + "\t" + "this y loc is" + this.y);
+    console.log(this.selector);
   }
   edgeDetect() {
     if (
@@ -100,13 +101,13 @@ class Walker {
       this.y > windowHeight ||
       this.y < 0
     ) {
-      this.x = 0;
-      this.y = 0;
+      this.x = random(width);
+      this.y = random(height);
     }
   }
   display() {
     stroke(255);
-    strokeWeight(2);
+    strokeWeight(this.latticel);
     point(this.x, this.y);
   }
 }
