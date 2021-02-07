@@ -1,20 +1,25 @@
-let walker;
-
+let walker = [];
+let amt = 10;
 function setup() {
+  colorMode(HSB);
   createCanvas(windowWidth, windowHeight);
-  walker = new Walker(
+  for(var i = 0; i < amt; i++){
+  walker[i] = new Walker(
     floor(random(0, width) + 1),
     floor(random(0, height) + 1),
-    10
+    5
   );
+  }
   background(0);
 }
 
 function draw() {
-  walker.move();
-  walker._DOF();
-  walker.edgeDetect();
-  walker.display();
+  for(var i = 0; i < walker.length; i++){
+  walker[i].move();
+  walker[i]._DOF();
+  walker[i].edgeDetect();
+  walker[i].display();
+}
 }
 /*lattice here is a square*/
 class Walker {
@@ -101,12 +106,13 @@ class Walker {
       this.y > windowHeight ||
       this.y < 0
     ) {
-      this.x = random(width);
-      this.y = random(height);
+      this.x = 0;
+      this.y = 0;
     }
   }
   display() {
-    stroke(255);
+    var factor = frameCount%3600;
+    stroke(360%factor,360,360);
     strokeWeight(this.latticel);
     point(this.x, this.y);
   }
