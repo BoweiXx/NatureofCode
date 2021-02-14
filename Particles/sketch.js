@@ -1,5 +1,5 @@
 let particles = [];
-let amount_p = 5000;
+let amount_p = 10000;
 let indexN = 0.11;
 let xoff = 0;
 let yoff = 0;
