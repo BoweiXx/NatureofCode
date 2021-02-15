@@ -36,7 +36,7 @@ class Beam {
     translate(width / 2, height / 2);
     for (var i = 0; i < this.nob; i++) {
       strokeWeight(3);
-      stroke(random(255), random(255), random(255), 255);
+      stroke(random(200), random(100), random(200), 255);
       line(0, 0, this.arr[i].x, this.arr[i].y);
       
     }
