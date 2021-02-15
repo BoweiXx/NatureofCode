@@ -1,37 +1,46 @@
-/*this project is going to be a particles that is restarined by some sort of movement patterns*/
-let vortex;
+/* A lluminascence beam */
 var a;
+let beam;
 function setup() {
-  createCanvas(400, 400);
-  a = createVector(100, 100);
-  vortex = new Vortex(a, 100, 100);
+  createCanvas(windowWidth, windowHeight);
+  angleMode(DEGREES);
+  beam = new Beam(200, 10, 255, 255, 255, 255);
   background(0);
 }
 
 function draw() {
-  blob.show();
+  a = p5.Vector.random2D();
+  beam.build(a);
+  beam.display();
 }
 
-class Vortex {
-  constructor(initpos, bwidth, bheight) {
-    this.initpos = initpos;
-    this.bwidth = bwidth;
-    this.bheight = bheight;
-    this.lattice = 10;
-    this.mass = 1;
-    this.gravity = createVector(0, -9.8);
+class Beam {
+  constructor(n, nob, initR, initG, initB, alph) {
+    this.n = n;
+    this.nob = nob; //number of beams
+    this.initR = initR; //initial red
+    this.initG = initG; 
+    this.initB = initB;
+    this.alph = alph; //initial alph
+    this.arr = []; //array of vectors
   }
-  show() {
-    const xcomp = this.initpos.x;
-    for (var i = 0; i < this.bheight / this.lattice; i++) {
-      for (var j = 0; j < this.bwidth / this.lattice; j++) {
-        stroke(255);
-        strokeWeight(3);
-        point(this.initpos.x, this.initpos.y);
-        this.initpos.x += this.lattice;
-        this.initpos.y += this.lattice;
-      }
-     
+  // here should use static method
+  build(cpos) {
+    var controller = random(0, this.n);
+    for (var i = 0; i < this.nob; i++) {
+      this.arr[i] = cpos.mult(controller);
+      this.arr[i].rotate(30 / (i - this.nob));
+    }
+    cpos.mult(controller);
+    console.log(cpos);
+  }
+  display() {
+    translate(width / 2, height / 2);
+    for (var i = 0; i < this.nob; i++) {
+      strokeWeight(2);
+      stroke(this.initR, this.initG, this.initB, this.alph);
+      line(0, 0, this.arr[i].x, this.arr[i].y);
+      
     }
   }
 }
